@@ -4,7 +4,7 @@ const Livro = require('../models/livro');  // Importa o modelo de livros
 
 // Criar um novo livro
 exports.criarLivro = async (req, res) => {
-  const { titulo, autor, ano_publicacao, isbn } = req.body;
+  const { titulo, autor, ano_publicacao, isbn, usuario_id } = req.body;
 
   if (!titulo || !autor) {
     return res.status(400).json({
@@ -14,7 +14,7 @@ exports.criarLivro = async (req, res) => {
   }
 
   try {
-    const novoLivro = await Livro.criar(titulo, autor, ano_publicacao, isbn);
+    const novoLivro = await Livro.criar(titulo, autor, ano_publicacao, isbn, usuario_id);
     
     // Mostra todos os dados no console
     console.log('📚 Novo livro criado:', novoLivro);

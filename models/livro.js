@@ -41,3 +41,13 @@ exports.buscarPorId = async (id) => {
   return res.rows[0] || null;
 };
 
+exports.criar = async (titulo, autor, ano_publicacao, isbn, usuario_id) => {
+  const query = `
+    INSERT INTO livros (titulo, autor, ano_publicacao, isbn, usuario_id)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *;
+  `;
+  const values = [titulo, autor, ano_publicacao, isbn, usuario_id];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+};

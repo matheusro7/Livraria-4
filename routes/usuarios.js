@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const usuariosControllers = require('../controllers/usuariosControllers');  // Importa o controlador de usuários
 
+router.get('/com-livros', usuariosControllers.listarUsuariosComLivros);
+
+router.get('/:id/livros', usuariosControllers.listarLivrosDoUsuario);
+
 // Rota para criar um novo usuário
 router.post('/', usuariosControllers.criarUsuario);
 

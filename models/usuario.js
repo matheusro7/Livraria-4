@@ -41,3 +41,58 @@ exports.buscarPorId = async (id) => {
   return res.rows[0] || null;
 };
 
+// Buscar livro do usuário
+exports.listarLivrosDoUsuario = async (usuarioId) => {
+  const query = 'SELECT * FROM livros WHERE usuario_id = $1';
+  const res = await pool.query(query, [usuarioId]);
+  return res.rows;
+};
+
+exports.listarUsuariosComLivros = async () => {
+  const query = `
+    SELECT 
+      u.id AS usuario_id,
+      u.nome,
+      u.email,
+      u.telefone,
+      l.id AS livro_id,
+      l.titulo,
+      l.autor,
+      l.ano_publicacao,
+      l.isbn
+    FROM usuarios u
+    LEFT JOIN livros l ON u.id = l.usuario_id
+    ORDER BY u.id;
+  `;
+
+  const res = await pool.query(query);
+
+  // Agrupar os livros por usuário
+  const usuariosMap = new Map();
+
+  res.rows.forEach(row => {
+    const usuarioId = row.usuario_id;
+
+    if (!usuariosMap.has(usuarioId)) {
+      usuariosMap.set(usuarioId, {
+        id: usuarioId,
+        nome: row.nome,
+        email: row.email,
+        telefone: row.telefone,
+        livros: []
+      });
+    }
+
+    if (row.livro_id) {
+      usuariosMap.get(usuarioId).livros.push({
+        id: row.livro_id,
+        titulo: row.titulo,
+        autor: row.autor,
+        ano_publicacao: row.ano_publicacao,
+        isbn: row.isbn
+      });
+    }
+  });
+
+  return Array.from(usuariosMap.values());
+};

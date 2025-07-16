@@ -120,3 +120,43 @@ tus(500).json({ error: 'Erro ao excluir o usuário.' });
     });
   }
 };
+
+
+exports.listarLivrosDoUsuario = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const livros = await Usuario.listarLivrosDoUsuario(id);
+    res.status(200).json({
+      mensagem: `Livros do usuário ${id}`,
+      total: livros.length,
+      livros
+    });
+  } catch (err) {
+    console.error(`❌ Erro ao listar livros do usuário ${id}:`, err.message);
+    res.status(500).json({
+      erro: 'Erro interno',
+      mensagem: 'Não foi possível listar os livros deste usuário.',
+      detalhes: err.message
+    });
+  }
+};
+
+exports.listarUsuariosComLivros = async (req, res) => {
+  try {
+    const usuarios = await Usuario.listarUsuariosComLivros();
+    res.status(200).json({
+      mensagem: 'Lista de usuários com seus livros.',
+      total: usuarios.length,
+      usuarios
+    });
+  } catch (err) {
+    console.error('❌ Erro ao listar usuários com livros:', err.message);
+    res.status(500).json({
+      erro: 'Erro interno',
+      mensagem: 'Não foi possível listar os usuários com livros.',
+      detalhes: err.message
+    });
+  }
+};
+
